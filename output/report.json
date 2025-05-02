@@ -1,0 +1,272 @@
+[
+  {
+    "app": "com.example:vuln-maven-app:1.0.0",
+    "package": "ch.qos.logback:logback-core",
+    "version": "1.2.7",
+    "ecosystem": "Maven",
+    "type": "dependency",
+    "vulnerabilities": [
+      {
+        "id": "GHSA-668q-qrv7-99fm",
+        "summary": "Deserialization of Untrusted Data in logback",
+        "severity": [
+          {
+            "type": "CVSS_V3",
+            "score": "CVSS:3.1/AV:N/AC:H/PR:H/UI:N/S:U/C:H/I:H/A:H"
+          }
+        ],
+        "package": "ch.qos.logback:logback-core",
+        "version": "1.2.7",
+        "fix_version": "1.2.9",
+        "ai_analysis": {
+          "description": "Mock analysis for GHSA-668q-qrv7-99fm",
+          "impact": "This could affect your application if improperly handled.",
+          "suggestion": "Consider upgrading <b>ch.qos.logback:logback-core</b> to the latest version."
+        }
+      }
+    ]
+  },
+  {
+    "app": "vuln-python-app:0.0.1",
+    "package": "django",
+    "version": "5.1.1",
+    "ecosystem": "PyPI",
+    "type": "dependency",
+    "vulnerabilities": [
+      {
+        "id": "GHSA-8498-2h75-472j",
+        "summary": "Django denial-of-service in django.utils.html.strip_tags()",
+        "severity": [
+          {
+            "type": "CVSS_V3",
+            "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+          },
+          {
+            "type": "CVSS_V4",
+            "score": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:N/VA:H/SC:N/SI:N/SA:N/E:U"
+          }
+        ],
+        "package": "django",
+        "version": "5.1.1",
+        "fix_version": "5.1.4",
+        "ai_analysis": {
+          "description": "Mock analysis for GHSA-8498-2h75-472j",
+          "impact": "This could affect your application if improperly handled.",
+          "suggestion": "Consider upgrading <b>django</b> to the latest version."
+        }
+      },
+      {
+        "id": "GHSA-qcgg-j2x8-h9g8",
+        "summary": "Django has a potential denial-of-service vulnerability in IPv6 validation",
+        "severity": [
+          {
+            "type": "CVSS_V3",
+            "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:N/I:N/A:L"
+          }
+        ],
+        "package": "django",
+        "version": "5.1.1",
+        "fix_version": "5.1.5",
+        "ai_analysis": {
+          "description": "Mock analysis for GHSA-qcgg-j2x8-h9g8",
+          "impact": "This could affect your application if improperly handled.",
+          "suggestion": "Consider upgrading <b>django</b> to the latest version."
+        }
+      },
+      {
+        "id": "PYSEC-2024-156",
+        "summary": "No summary",
+        "severity": [],
+        "package": "django",
+        "version": "5.1.1",
+        "fix_version": "5.1.4",
+        "ai_analysis": {
+          "description": "Mock analysis for PYSEC-2024-156",
+          "impact": "This could affect your application if improperly handled.",
+          "suggestion": "Consider upgrading <b>django</b> to the latest version."
+        }
+      },
+      {
+        "id": "PYSEC-2024-157",
+        "summary": "No summary",
+        "severity": [],
+        "package": "django",
+        "version": "5.1.1",
+        "fix_version": "5.1.4",
+        "ai_analysis": {
+          "description": "Mock analysis for PYSEC-2024-157",
+          "impact": "This could affect your application if improperly handled.",
+          "suggestion": "Consider upgrading <b>django</b> to the latest version."
+        }
+      },
+      {
+        "id": "PYSEC-2025-1",
+        "summary": "No summary",
+        "severity": [],
+        "package": "django",
+        "version": "5.1.1",
+        "fix_version": "5.1.5",
+        "ai_analysis": {
+          "description": "Mock analysis for PYSEC-2025-1",
+          "impact": "This could affect your application if improperly handled.",
+          "suggestion": "Consider upgrading <b>django</b> to the latest version."
+        }
+      },
+      {
+        "id": "PYSEC-2025-13",
+        "summary": "No summary",
+        "severity": [],
+        "package": "django",
+        "version": "5.1.1",
+        "fix_version": "5.1.7",
+        "ai_analysis": {
+          "description": "Mock analysis for PYSEC-2025-13",
+          "impact": "This could affect your application if improperly handled.",
+          "suggestion": "Consider upgrading <b>django</b> to the latest version."
+        }
+      },
+      {
+        "id": "PYSEC-2025-14",
+        "summary": "No summary",
+        "severity": [],
+        "package": "django",
+        "version": "5.1.1",
+        "fix_version": "5.1.8",
+        "ai_analysis": {
+          "description": "Mock analysis for PYSEC-2025-14",
+          "impact": "This could affect your application if improperly handled.",
+          "suggestion": "Consider upgrading <b>django</b> to the latest version."
+        }
+      }
+    ]
+  },
+  {
+    "app": "vuln-python-app:0.0.1",
+    "package": "requests",
+    "version": "2.18.0",
+    "ecosystem": "PyPI",
+    "type": "dependency",
+    "vulnerabilities": [
+      {
+        "id": "GHSA-9wx4-h78v-vm56",
+        "summary": "Requests `Session` object does not verify requests after making first request with verify=False",
+        "severity": [
+          {
+            "type": "CVSS_V3",
+            "score": "CVSS:3.1/AV:L/AC:H/PR:H/UI:R/S:U/C:H/I:H/A:N"
+          }
+        ],
+        "package": "requests",
+        "version": "2.18.0",
+        "fix_version": "2.32.0",
+        "ai_analysis": {
+          "description": "Mock analysis for GHSA-9wx4-h78v-vm56",
+          "impact": "This could affect your application if improperly handled.",
+          "suggestion": "Consider upgrading <b>requests</b> to the latest version."
+        }
+      },
+      {
+        "id": "GHSA-j8r2-6x86-q33q",
+        "summary": "Unintended leak of Proxy-Authorization header in requests",
+        "severity": [
+          {
+            "type": "CVSS_V3",
+            "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:C/C:H/I:N/A:N"
+          }
+        ],
+        "package": "requests",
+        "version": "2.18.0",
+        "fix_version": "2.31.0",
+        "ai_analysis": {
+          "description": "Mock analysis for GHSA-j8r2-6x86-q33q",
+          "impact": "This could affect your application if improperly handled.",
+          "suggestion": "Consider upgrading <b>requests</b> to the latest version."
+        }
+      },
+      {
+        "id": "GHSA-x84v-xcm2-53pg",
+        "summary": "Insufficiently Protected Credentials in Requests",
+        "severity": [
+          {
+            "type": "CVSS_V3",
+            "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+          }
+        ],
+        "package": "requests",
+        "version": "2.18.0",
+        "fix_version": "2.20.0",
+        "ai_analysis": {
+          "description": "Mock analysis for GHSA-x84v-xcm2-53pg",
+          "impact": "This could affect your application if improperly handled.",
+          "suggestion": "Consider upgrading <b>requests</b> to the latest version."
+        }
+      },
+      {
+        "id": "PYSEC-2018-28",
+        "summary": "No summary",
+        "severity": [],
+        "package": "requests",
+        "version": "2.18.0",
+        "fix_version": "c45d7c49ea75133e52ab22a8e9e13173938e36ff",
+        "ai_analysis": {
+          "description": "Mock analysis for PYSEC-2018-28",
+          "impact": "This could affect your application if improperly handled.",
+          "suggestion": "Consider upgrading <b>requests</b> to the latest version."
+        }
+      },
+      {
+        "id": "PYSEC-2023-74",
+        "summary": "No summary",
+        "severity": [],
+        "package": "requests",
+        "version": "2.18.0",
+        "fix_version": "74ea7cf7a6a27a4eeb2ae24e162bcc942a6706d5",
+        "ai_analysis": {
+          "description": "Mock analysis for PYSEC-2023-74",
+          "impact": "This could affect your application if improperly handled.",
+          "suggestion": "Consider upgrading <b>requests</b> to the latest version."
+        }
+      }
+    ]
+  },
+  {
+    "app": "vuln-python-app:0.0.1",
+    "package": "pyjwt",
+    "version": "1.7.1",
+    "ecosystem": "PyPI",
+    "type": "dependency",
+    "vulnerabilities": [
+      {
+        "id": "GHSA-ffqj-6fqr-9h24",
+        "summary": "Key confusion through non-blocklisted public key formats",
+        "severity": [
+          {
+            "type": "CVSS_V3",
+            "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N"
+          }
+        ],
+        "package": "pyjwt",
+        "version": "1.7.1",
+        "fix_version": "2.4.0",
+        "ai_analysis": {
+          "description": "Mock analysis for GHSA-ffqj-6fqr-9h24",
+          "impact": "This could affect your application if improperly handled.",
+          "suggestion": "Consider upgrading <b>pyjwt</b> to the latest version."
+        }
+      },
+      {
+        "id": "PYSEC-2022-202",
+        "summary": "No summary",
+        "severity": [],
+        "package": "pyjwt",
+        "version": "1.7.1",
+        "fix_version": "9c528670c455b8d948aff95ed50e22940d1ad3fc",
+        "ai_analysis": {
+          "description": "Mock analysis for PYSEC-2022-202",
+          "impact": "This could affect your application if improperly handled.",
+          "suggestion": "Consider upgrading <b>pyjwt</b> to the latest version."
+        }
+      }
+    ]
+  }
+]

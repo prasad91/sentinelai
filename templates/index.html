@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>SentinelAI Vulnerability Report</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 1rem;
+            background: #f4f4f4;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            background: white;
+            margin-top: 1rem;
+        }
+
+        th,
+        td {
+            padding: 0.5rem;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+
+        th {
+            background: #eee;
+        }
+
+        tr:hover {
+            background: #f9f9f9;
+        }
+
+        .severity-CRITICAL {
+            color: red;
+            font-weight: bold;
+        }
+
+        .severity-HIGH {
+            color: orange;
+            font-weight: bold;
+        }
+
+        .severity-MEDIUM {
+            color: #666;
+        }
+
+        .severity-MODERATE {
+            color: #666;
+        }
+
+        .severity-LOW {
+            color: green;
+        }
+
+        .cve-link {
+            text-decoration: none;
+            color: #0073e6;
+        }
+
+        .ai-details {
+            background-color: #fdfdfd;
+            font-size: 0.9rem;
+        }
+
+        .hitl-actions button {
+            margin-right: 5px;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+
+<body>
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h1>🛡️ SentinelAI Vulnerability Report</h1>
+        <button onclick="rescan()" style="padding: 6px 12px; font-size: 14px;">🔄 Rescan</button>
+    </div>
+
+
+    <script>
+        function rescan() {
+            const confirmRescan = confirm("This will pull the latest code and re-run the scan. Continue?");
+            if (!confirmRescan) return;
+
+            fetch('/rescan', { method: 'GET' })
+                .then(res => {
+                    if (res.ok) {
+                        alert("✅ Rescan complete. Reloading...");
+                        location.reload();
+                    } else {
+                        alert("❌ Rescan failed.");
+                    }
+                })
+                .catch(err => {
+                    console.error("Rescan error:", err);
+                    alert("❌ Error during rescan.");
+                });
+        }
+
+        function parseCVSSSeverity(vector) {
+            if (!vector) return 'UNKNOWN';
+            if (vector.includes('C:H') && vector.includes('I:H') && vector.includes('A:H')) return 'CRITICAL';
+            if (vector.includes('C:H') || vector.includes('I:H')) return 'HIGH';
+            if (vector.includes('C:L') || vector.includes('I:L') || vector.includes('A:L')) return 'MODERATE';
+            return 'LOW';
+        }
+
+        function extractFixVersion(vuln) {
+            return vuln.fix_version || 'N/A';
+        }
+
+        function toggleAI(button) {
+            const aiRow = button.closest("tr").nextElementSibling;
+            if (aiRow && aiRow.classList.contains("ai-details")) {
+                aiRow.style.display = aiRow.style.display === "none" ? "table-row" : "none";
+            }
+        }
+
+        function markDecision(button, decision) {
+            const container = button.closest(".hitl-actions");
+            const status = container.querySelector(".decision-status");
+            const vulnId = container.getAttribute("data-vuln-id");
+
+            // Show feedback
+            const labels = {
+                now: "✅ Dependency vulnability issue fixed. Rebuild and deploy now.",
+                later: "❌ Marked as: Fix Later"
+            };
+
+            const colors = {
+                now: "green",
+                later: "orange"
+            };
+
+            if (decision === 'now') {
+                const vulnData = {
+                    id: vulnId,
+                    package: container.dataset.package,
+                    fix_version: container.dataset.fixVersion
+                };
+
+                fetch('/fix', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        ecosystem: container.dataset.ecosystem,
+                        package: container.dataset.package,
+                        fix_version: container.dataset.fixVersion
+                    })
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            const buttons = container.querySelectorAll("button");
+                            buttons.forEach(btn => btn.disabled = true);
+                            const statusMessage = `&nbsp;<a href="${data.pr_url}" target="_blank">View Pull Request</a>`;
+                            status.innerHTML = labels[decision] + statusMessage;
+                            status.style.color = colors[decision];
+                        } else {
+                            status.textContent = "❌ Fix failed. Try again.";
+                            status.style.color = colors[decision];
+                        }
+                    })
+                    .catch(err => {
+                        console.error("❌ Fix request error", err);
+                        status.textContent = "❌ Fix failed. Try again.";
+                    });
+            }
+        }
+
+        fetch('/data')
+            .then(res => res.json())
+            .then(data => {
+                const grouped = {};
+                data.forEach(item => {
+                    const key = `${item.ecosystem || 'Unknown'}`;
+                    if (!grouped[key])
+                        grouped[key] = [];
+                    grouped[key].push(item);
+                });
+
+                Object.entries(grouped).forEach(([groupKey, items]) => {
+                    const ecosystem = groupKey;
+                    const appName = items[0]?.app || "Unnamed App";
+
+                    const sectionHeader = document.createElement('h2');
+                    sectionHeader.textContent = `📦 App: ${appName} (Ecosystem: ${ecosystem})`;
+                    document.body.appendChild(sectionHeader);
+
+                    const table = document.createElement('table');
+                    table.innerHTML = `
+                        <thead>
+                        <tr>
+                            <th>Package</th>
+                            <th>Version</th>
+                            <th>CVE ID</th>
+                            <th>Summary</th>
+                            <th>Severity</th>
+                            <th>Fix Suggested</th>
+                            <th>AI Review</th>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                    `;
+                    document.body.appendChild(table);
+
+                    items.forEach(item => {
+                        const tbody = table.querySelector('tbody');
+
+                        if (!item.vulnerabilities) return;
+                        item.vulnerabilities.forEach(vuln => {
+                            const cvssVector = vuln.severity?.[0]?.score || '';
+                            const severity = parseCVSSSeverity(cvssVector);
+                            const cveId = vuln.id || 'N/A';
+                            const cveLink = cveId.startsWith("CVE-") || cveId.startsWith("GHSA") ?
+                                `<a class="cve-link" href="https://osv.dev/vulnerability/${cveId}" target="_blank">${cveId}</a>` :
+                                cveId;
+                            const fixVersion = extractFixVersion(vuln);
+                            const ecosystem = item.ecosystem || 'Unknown';
+                            const summary = vuln.summary || 'No description provided';
+
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${item.package}</td>
+                                <td>${item.version}</td>
+                                <td>${cveLink}</td>
+                                <td>${summary}</td>
+                                <td class="severity-${severity}">${severity}</td>
+                                <td>${fixVersion}</td>
+                                <td><button onclick="toggleAI(this)">View</button></td>
+                            `;
+                            tbody.appendChild(row);
+                            const ai = vuln.ai_analysis || {};
+                            const aiRow = document.createElement('tr');
+                            aiRow.classList.add("ai-details");
+                            aiRow.style.display = "none";
+                            aiRow.innerHTML = `
+                                <td colspan="8">
+                                    <strong>📝 Description:</strong> ${ai.description || "N/A"}<br>
+                                    <strong>💥 Impact:</strong> ${ai.impact || "N/A"}<br>
+                                    <strong>🤖 Agent Suggestion:</strong> ${ai.suggestion || 'No action suggested.'}<br>
+                                    <div class="hitl-actions" data-vuln-id="${vuln.id}" data-ecosystem="${ecosystem}" data-package="${item.package}" data-fix-version="${vuln.fix_version}">
+                                        <button onclick="markDecision(this, 'now')">✅ Fix now</button>
+                                        <button onclick="markDecision(this, 'later')">❌ Fix Later</button>
+                                        <span class="decision-status" style="margin-left:10px;"></span>
+                                    </div>
+                                </td>
+                            `;
+                            tbody.appendChild(aiRow);
+                        });
+                    });
+                });
+            });
+    </script>
+</body>
+
+</html>
