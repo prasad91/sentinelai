@@ -1,4 +1,3 @@
-
 # 🛡️ SentinelAI
 
 **SentinelAI** is a lightweight, agent-assisted security tool that scans open source dependencies for known vulnerabilities using [OSV.dev](https://osv.dev), explains issues using AI, and allows human-in-the-loop (HITL) approvals to apply real-time fixes and auto-create GitHub pull requests.
@@ -34,11 +33,12 @@ SentinelAI/
 │   ├── requirements_parser.py
 │   ├── osv_client.py         # Talks to OSV.dev
 │   ├── pom_updater.py        # Fix logic
-├── viewer.py                 # Web UI server with HITL controls
-├── app.py                    # Git clone + auto-scan CLI
-├── git_helper.py             # Git clone, branch, commit, PR
-├── output/report.json        # Scan result with AI analysis
-├── templates/index.html      # Frontend UI
+├── ai_analysis.py            # AI prompt generation
+├── app.py                    # Git clone + scan engine
+├── templates/                # HTML UI (Flask based)
+│   ├── index.html            # Entry form
+│   └── results.html          # HITL fix UI
+├── utils/git_helper.py       # Git clone, branch, commit, PR logic
 ```
 
 ---
@@ -46,34 +46,25 @@ SentinelAI/
 ## ⚡ Quick Start
 
 ### 1. Install Requirements
-
 ```bash
 pip install -r requirements.txt
 ```
 
-### 2. Run the Scanner (from Git)
-
+### 2. Run the App (Web UI)
 ```bash
 python app.py
 ```
-
-This clones the repo, scans dependencies, and generates `report.json`.
-
-### 3. Start the Viewer
-
-```bash
-python viewer.py
-```
-
-Visit [http://localhost:8000](http://localhost:8000) to review results.
+Visit [http://localhost:5000](http://localhost:5000) to start scanning.
 
 ---
 
 ## 🧠 Fix Workflow
 
-1. Review vulnerabilities in the UI
-2. Click ✅ **Fix Now** to:
-   - Apply the upgrade (e.g., to `pom.xml`)
+1. Submit a GitHub repo URL in the web UI
+2. View vulnerabilities grouped by app name
+3. Read AI-generated analysis and suggestions
+4. Click ✅ **Approve Fix** to:
+   - Apply the upgrade (e.g., to `package.json`)
    - Create a Git branch
    - Commit & push
    - Open a Pull Request automatically
@@ -85,8 +76,9 @@ Visit [http://localhost:8000](http://localhost:8000) to review results.
 | Variable        | Description                          |
 |----------------|--------------------------------------|
 | `GITHUB_TOKEN` | Used for opening PRs via GitHub API  |
-| `repo_url`     | Git repo to scan and patch           |
-| `branch`       | Base branch (default: `main`)        |
+| `OPENAI_TOKEN` | Used for generating analysis/suggestions |
+
+Set these in a `.env` file.
 
 ---
 
@@ -96,10 +88,10 @@ Visit [http://localhost:8000](http://localhost:8000) to review results.
 - [x] AI analysis of vulnerabilities
 - [x] Human-in-the-loop fix approval
 - [x] Git integration with PR creation
-- [x] Real-time UI and Rescan
+- [x] App-based filtering and rescan
 
 ---
 
 ## 📄 License
 
-MIT License. Built for educational and internal DevSecOps automation.
+MIT License. Built for internal DevSecOps use and educational purposes.

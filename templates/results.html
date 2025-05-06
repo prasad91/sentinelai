@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Scan Results - SentinelAI</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script>
+        async function approveFix(packageName, vulnId) {
+            const response = await fetch("/approve", {
+                method: "POST",
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ package: packageName, id: vulnId, repo_url: "{{ request.form.repo_url }}" })
+            });
+            const result = await response.json();
+            const alertBox = document.getElementById("alert-box");
+            alertBox.classList.remove("d-none", "alert-success", "alert-danger");
+            if (result.pr_url) {
+                alertBox.classList.add("alert-success");
+                alertBox.innerHTML = `✅ Pull Request Created: <a href="${result.pr_url}" target="_blank">${result.pr_url}</a>`;
+            } else {
+                alertBox.classList.add("alert-danger");
+                alertBox.innerText = result.error || "Something went wrong.";
+            }
+            window.scrollTo(0, 0);
+        }
+    </script>
+</head>
+
+<body class="container py-4">
+    <div id="alert-box" class="alert d-none" role="alert"></div>
+    <h2 class="mb-4">Scan Results</h2>
+
+    <label for="app">Filter by App:</label>
+    <select id="app" class="form-select mb-4" onchange="filterApp(this.value)">
+        <option value="All" {% if selected_app=='All' %}selected{% endif %}>All</option>
+        {% for app in apps %}
+        <option value="{{ app }}" {% if selected_app==app %}selected{% endif %}>{{ app }}</option>
+        {% endfor %}
+    </select>
+    <script>
+        function filterApp(appName) {
+            const cards = document.querySelectorAll(".vuln-card");
+            cards.forEach(card => {
+                const appAttr = card.getAttribute("data-app");
+                card.style.display = (appName === "All" || appAttr === appName) ? "block" : "none";
+            });
+        }
+    </script>
+
+    {% for v in vulns if selected_app == 'All' or v.app == selected_app %}
+    <div class="card mb-3 vuln-card" data-app="{{ v.app }}">
+        <div class="card-body">
+            <h5 class="card-title">{{ v.id }} in {{ v.package }} (v{{ v.version }})</h5>
+            <p><strong>Current version:</strong> {{ v.version }}&nbsp;<strong>Fix version:</strong> {{
+                v.fix_version }}</p>
+            <p><strong>Summary:</strong> {{ v.summary }}</p>
+            <p><strong>Impact:</strong> {{ v.impact }}</p>
+            <p><strong>Suggestion:</strong> {{ v.suggestion }}</p>
+            <button class="btn btn-success" onclick="approveFix('{{ v.package }}', '{{ v.id }}')">✅ Approve Fix</button>
+        </div>
+    </div>
+    {% endfor %}
+</body>
+
+</html>

@@ -24,8 +24,14 @@ def extract_fix_version(affected):
                 return event["fixed"]
     return None
 
-def is_version_in_range(version: Version, introduced: Version, fixed: Version) -> bool:
-    return (not introduced or version >= introduced) and (not fixed or version < fixed)
+def is_version_in_range(current: Version, introduced: Version, fixed: Version) -> bool:
+    if introduced and fixed:
+        return introduced <= current < fixed
+    elif introduced:
+        return current >= introduced
+    elif fixed:
+        return current < fixed
+    return False
 
 
 def is_version_vulnerable(current_version: str, affected_ranges: list) -> bool:
@@ -35,7 +41,7 @@ def is_version_vulnerable(current_version: str, affected_ranges: list) -> bool:
         return True  # If version can't be parsed, better to include it
 
     for affected in affected_ranges:
-        if affected.get("type") != "ECOSYSTEM":
+        if affected.get("type") not in {"ECOSYSTEM", "SEMVER"}:
             continue
 
         introduced = next((Version(event["introduced"]) for event in affected.get("events", []) if "introduced" in event), None)

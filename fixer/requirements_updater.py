@@ -1,4 +1,4 @@
-def update_requirements_txt(file_path, package_name, new_version):
+def update_requirements(file_path, package_name, new_version):
     lines = []
     found = False
 

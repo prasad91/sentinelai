@@ -1,6 +1,6 @@
 import xml.etree.ElementTree as ET
 
-def update_pom_dependency(pom_path, group_id, artifact_id, new_version):
+def update_pom(pom_path, group_id, artifact_id, new_version):
     tree = ET.parse(pom_path)
     root = tree.getroot()
     ns = {'mvn': 'http://maven.apache.org/POM/4.0.0'}
