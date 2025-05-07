@@ -72,33 +72,41 @@ def index():
 
     return render_template('index.html')
 
-def scan_dependencies(repo_path):
-    all_deps = []
-    pom_path = os.path.join(repo_path, "pom.xml")
-    pkg_path = os.path.join(repo_path, "package.json")
-    req_path = os.path.join(repo_path, "requirements.txt")
-
+def scan_pom_dependencies(repo_path):
+    file_name="pom.xml"
+    pom_path = os.path.join(repo_path, file_name)
     if os.path.exists(pom_path):
         deps = parse_pom(pom_path)
         for d in deps:
-            #d["app"] = os.path.basename(repo_path)
-            d["file"] = "pom.xml"
-        all_deps.extend(deps)
+            d["file"] = file_name
+        return deps
+    return []
 
+def scan_package_json_dependencies(repo_path):
+    file_name="package.json"
+    pkg_path = os.path.join(repo_path, file_name)
     if os.path.exists(pkg_path):
         deps = parse_package_json(pkg_path)
         for d in deps:
-            #d["app"] = os.path.basename(repo_path)
-            d["file"] = "package.json"
-        all_deps.extend(deps)
+            d["file"] = file_name
+        return deps
+    return []
 
+def scan_requirements_dependencies(repo_path):
+    file_name="requirements.txt"
+    req_path = os.path.join(repo_path, file_name)
     if os.path.exists(req_path):
         deps = parse_requirements(req_path)
         for d in deps:
-            #d["app"] = os.path.basename(repo_path)
-            d["file"] = "requirements.txt"
-        all_deps.extend(deps)
+            d["file"] = file_name
+        return deps
+    return []
 
+def scan_dependencies(repo_path):
+    all_deps = []
+    all_deps.extend(scan_pom_dependencies(repo_path))
+    all_deps.extend(scan_package_json_dependencies(repo_path))
+    all_deps.extend(scan_requirements_dependencies(repo_path))
     return all_deps
 
 @app.route("/scan", methods=["POST"])
