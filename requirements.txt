@@ -4,3 +4,4 @@ streamlit
 gitpython
 requests
 flask
+lxml

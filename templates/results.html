@@ -30,7 +30,8 @@
 <body class="container py-4">
     <div id="alert-box" class="alert d-none" role="alert"></div>
     <h2 class="mb-4">Scan Results</h2>
-
+    <div class="float-end"><a href="/">Back to Scan</a></div>
+    {% if vulns %}
     <label for="app">Filter by App:</label>
     <select id="app" class="form-select mb-4" onchange="filterApp(this.value)">
         <option value="All" {% if selected_app=='All' %}selected{% endif %}>All</option>
@@ -61,6 +62,9 @@
         </div>
     </div>
     {% endfor %}
+    {% else %}
+    <p>No vulnerabilities found.</p>
+    {% endif %}
 </body>
 
 </html>

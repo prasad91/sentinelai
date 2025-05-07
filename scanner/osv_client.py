@@ -68,3 +68,27 @@ def parsed_vulnerabilities(vulns, package, version):
             })
     
     return parsed
+
+def check_vulnerabilities(dep: dict) -> list:
+    package_name = dep.get("package")
+    version = dep.get("version")
+
+    if not package_name or not version:
+        return []
+
+    payload = {
+        "version": version,
+        "package": {
+            "ecosystem": "Maven" if ":" in package_name else "npm",
+            "name": package_name
+        }
+    }
+
+    try:
+        response = requests.post("https://api.osv.dev/v1/query", json=payload)
+        response.raise_for_status()
+        result = response.json()
+        return result.get("vulns", [])
+    except requests.RequestException as e:
+        print(f"Error querying OSV: {e}")
+        return []
